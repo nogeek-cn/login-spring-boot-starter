@@ -1,4 +1,4 @@
-package com.darian.darianSecurityDemo.exception;
+package com.darian.darianSercurityCore.exception;
 
 
 import java.text.SimpleDateFormat;

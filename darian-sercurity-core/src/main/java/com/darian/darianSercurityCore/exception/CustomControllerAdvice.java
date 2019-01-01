@@ -1,4 +1,4 @@
-package com.darian.darianSecurityDemo.exception;
+package com.darian.darianSercurityCore.exception;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.darian.darianSecurityDemo.exception.Response.error;
+import static com.darian.darianSercurityCore.exception.Response.error;
 import static java.util.stream.Collectors.toList;
 
 /**

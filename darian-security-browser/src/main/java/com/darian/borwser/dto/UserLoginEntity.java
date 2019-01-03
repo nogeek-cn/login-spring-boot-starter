@@ -1,4 +1,4 @@
-package com.darian.darianSecurityBrowser.dto;
+package com.darian.borwser.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.darian.darianSecurityBrowser;
+package com.darian.borwser;
 
 import org.springframework.context.annotation.Import;
 

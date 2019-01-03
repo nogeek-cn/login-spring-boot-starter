@@ -121,7 +121,7 @@
             height: 44px;
             outline: none;
             /*color: white;*/
-            color:#04ff43;
+            color: #04ff43;
             background: -webkit-linear-gradient(#3fb9ff, #099be7, #229de3);
             background: -o-linear-gradient(#3fb9ff, #099be7, #229de3);
             background: -moz-linear-gradient(#3fb9ff, #099be7, #229de3);
@@ -144,7 +144,7 @@
             height: 44px;
             outline: none;
             /*color: white;*/
-            color:#04ff43;
+            color: #04ff43;
             background: -webkit-linear-gradient(#3fb9ff, #099be7, #229de3);
             background: -o-linear-gradient(#3fb9ff, #099be7, #229de3);
             background: -moz-linear-gradient(#3fb9ff, #099be7, #229de3);
@@ -376,8 +376,6 @@
         #tlogin:focus {
             outline: none;
         }
-
-
     </style>
     <title></title>
 </head>
@@ -387,28 +385,32 @@
 <div id="middle">
     <form action="/authentication/form" method="post">
         <ul style="text-align: center;">
-            <li style="font-size: 48px;color:#adff78">Talking is cheap, show me your code</li>
-            <li style="font-size: 32px">程序员管理系统</li>
+            <!--<li style="font-size: 48px;color:#adff78">Talking is cheap, show me your code</li>-->
+            <li style="font-size: 32px">demo 登陆系统</li>
             <li>
                 <input class="name" type="text" name="username" placeholder="请输入用户名">
             </li>
             <li>
                 <input type="password" name="password" class="pwd" placeholder="请输入密码">
             </li>
-            <!--<li id="verifyCode" style="display: block;">-->
-            <!--<input id="valid" name="rand" placeholder="请输入验证码" maxlength="4">-->
-            <!--<span id="validcode"><img id="img_captcha" src="/img/jcaptcha.jpg"></span> <span id="changeimg">换一张</span>-->
-            <!--</li>-->
+            <li id="verifyCode" style="display: block;">
+                <input id="valid" name="imageCode" placeholder="请输入验证码" maxlength="4">
+                <span id="validcode"><img id="img_captcha" src="/code/image"></span> <span id="changeimg" onclick="changeimage();">换一张</span>
+            </li>
+            <li>
+                <input id="login2" type="checkbox" name="remember-me" value="true">
+                <button id="login2" >记住我</button>
+            </li>
             <li>
                 <button id="login" type="submit">立即登录</button>
             </li>
             <li>
-                <button id="login1" onclick="window.location='/darianlogin.html';">QQ登陆</button>
+                <button id="login1" onclick="window.location='/auth/qq">QQ登陆</button>
                 <button id="login2" onclick="window.location='/darianlogin.html';">微信登陆</button>
             </li>
-            <!--<li>-->
-            <!--<span id="err" style="display: inline-block;">密码错误</span>-->
-            <!--</li>-->
+            <li>
+            <span id="err" style="display: inline-block;">密码错误</span>
+            </li>
         </ul>
     </form>
 </div>
@@ -441,20 +443,24 @@
                 $("#err").text("请输入用户名或密码");
                 return false;
             }
-            var code = $("#valid").val().toLocaleLowerCase();
-            code = $.trim(code);
-            if (code.length < 4) {
-                $("#err").css("display", "inline-block");
-                $("#err").text("验证码错误");
-                return false;
-            }
+            // var code = $("#valid").val().toLocaleLowerCase();
+            // code = $.trim(code);
+            // if (code.length < 4) {
+            //     $("#err").css("display", "inline-block");
+            //     $("#err").text("验证码错误");
+            //     return false;
+            // }
         });
 
+        function changeimage(){
+            $('#verifyCodePic')[0].src = '/code/image'
+        }
 
-        $('#changeimg').click(function () {
-            $('#verifyCodePic')[0].src = '/jcaptcha.jpg?' + Math.random();
-            return false;
-        });
+        // $('#changeimg').click(function () {
+        //     // $('#verifyCodePic')[0].src = '/jcaptcha.jpg?' + Math.random();
+        //
+        //     return false;
+        // });
     }
 
 </script>

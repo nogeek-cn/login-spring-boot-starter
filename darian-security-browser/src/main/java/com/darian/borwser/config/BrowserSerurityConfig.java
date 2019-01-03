@@ -1,15 +1,24 @@
-package com.darian.darianSecurityBrowser.config;
+package com.darian.borwser.config;
 
-import com.darian.darianSecurityBrowser.authentication.DarianAuthenticationSuccessHandler;
-import com.darian.darianSercurityCore.properties.SecurityProperties;
+import com.darian.borwser.authentication.DarianAuthenctiationFailureHandler;
+import com.darian.borwser.authentication.DarianAuthenticationSuccessHandler;
+import com.darian.core.filter.ValidateCodeFilter;
+import com.darian.core.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
+
+import javax.sql.DataSource;
 
 /***
  * web 安全配置
@@ -17,12 +26,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class BrowserSerurityConfig extends WebSecurityConfigurerAdapter {
-    //    private final ValidateCodeFilter validateCodeFilter;
+    private final ValidateCodeFilter validateCodeFilter;
     private final SecurityProperties securityProperties;
-//    private final DataSource dataSource;
-//    private final UserDetailsService myUerDetailsService;
+    private final DataSource dataSource;
+    private final UserDetailsService myUerDetailsService;
 
     private final DarianAuthenticationSuccessHandler darianAuthenticationSuccessHandler;
+    private final DarianAuthenctiationFailureHandler darianAuthenctiationFailureHandler;
+    private final SpringSocialConfigurer darianSocialConfigurer;
 
     @Bean
     @ConditionalOnMissingBean(PasswordEncoder.class)
@@ -30,27 +41,43 @@ public class BrowserSerurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        // 是否要在启动的时候创建表的语句
+//        tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        
         // 表单登陆
-        http.formLogin()  // 表单   // 用户名，密码验证前需要做的事情
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                //---------------登陆相关---------------------
+                .formLogin()  // 表单   // 用户名，密码验证前需要做的事情
 //                http.httpBasic()   // 页面的登陆
                 .loginPage("/authentication/require") // 一个不需要表单验证的页面
                 .loginProcessingUrl("/authentication/form")
-                .successForwardUrl("/onSuccessUserNamePasswordLogin")   // 我配置了成功以后的 URL 转发路径就不配置成功处理器了
-                .failureForwardUrl("/onFailUserNamePasswordLogin")
-//                .successHandler(darianAuthenticationSuccessHandler) // 表单通过以后，用我们的成功处理器来处理了
+                // 成功处理器
+                .successHandler(darianAuthenticationSuccessHandler)   // 表单通过以后，用我们的成功处理器来处理了
+                // 错误处理器
+                .failureHandler(darianAuthenctiationFailureHandler)
                 .and()
-//                .rememberMe()          // 记住我的链接
-//                .tokenRepository(persistentTokenRepository())  //
-//                .userDetailsService(myUerDetailsService)   // 登陆
-//                .and()
+                //------------接住我的宫鞥--------------
+                .rememberMe()          // 记住我的链接
+                .tokenRepository(persistentTokenRepository())  //
+                .tokenValiditySeconds(securityProperties.getBrowser().getRemberMeSeconds())
+                .userDetailsService(myUerDetailsService)   // 登陆
+                .and()
                 .authorizeRequests()    // 请求
+                // ---------------直接放行的请求-------
                 .antMatchers("/authentication/require").permitAll()  // 这里也需要设置
                 .antMatchers(securityProperties.getBrowser().getLoginPage()).permitAll()
                 .antMatchers("/onFailUserNamePasswordLogin").permitAll()
                 .antMatchers("/login-success.html").permitAll()
+                .antMatchers("/code/image").permitAll()
                 .antMatchers("/img/*").permitAll()
                 .antMatchers("/js/*").permitAll()
                 .anyRequest()           // 所有请求

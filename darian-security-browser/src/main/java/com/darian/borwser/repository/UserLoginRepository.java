@@ -1,6 +1,7 @@
-package com.darian.darianSecurityBrowser.repository;
+package com.darian.borwser.repository;
 
-import com.darian.darianSecurityBrowser.dto.UserLoginEntity;
+import com.darian.borwser.dto.UserLoginEntity;
+import org.springframework.social.security.SocialUserDetails;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -46,5 +47,10 @@ public class UserLoginRepository {
         return userMap.values().stream()
                 .filter(user -> s.equals(user.getUsername()))
                 .findFirst().get();
+    }
+
+    public SocialUserDetails loadUserByUserId(String userId) {
+        //.. 查找用户信息。
+        return null;
     }
 }

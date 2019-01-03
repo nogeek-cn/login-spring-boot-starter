@@ -1,11 +1,11 @@
-package com.darian.darianSecurityBrowser;
+package com.darian.borwser;
 
-import com.darian.darianSercurityCore.EnableDarianSecurityCore;
+import com.darian.core.EnableDarianSecurityCore;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @EnableDarianSecurityCore
-@ComponentScan({"com.darian.darianSecurityBrowser"})
+@ComponentScan({"com.darian.borwser"})
 @EnableAspectJAutoProxy
 public class AutoConfiguration {
     public AutoConfiguration() {

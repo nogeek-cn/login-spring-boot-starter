@@ -1,11 +1,12 @@
-package com.darian.darianSecurityBrowser.authentication;
+package com.darian.borwser.authentication;
 
 
+import com.darian.core.exception.Response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -23,14 +24,14 @@ import java.io.IOException;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class DarianAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+public class DarianAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private final ObjectMapper objectMapper;
 
     /***
      *
      * 我自定义个了一个成功处理器的行为
-     * @param httpServletRequest
-     * @param httpServletResponse
+     * @param request
+     * @param response
      * @param authentication  封装我们的认证信息，认证信息包括我们的认证里边的一些
      *                        请求里边的信息，IP 和 Session 等
      *                        还有认证通过以后，UserDetail 信息也是包装在
@@ -39,12 +40,12 @@ public class DarianAuthenticationSuccessHandler implements AuthenticationSuccess
      * @throws ServletException
      */
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
-                                        HttpServletResponse httpServletResponse,
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication)
             throws IOException, ServletException {
         log.info("登陆成功");
-//        onSuccessLoginController.onSuccessLogin(authentication);
-        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(authentication));
+        response.setContentType("application/json;charset=UTF-8");
+        String returnValue = objectMapper.writeValueAsString(Response.success(authentication));
+        response.getWriter().write(returnValue);
     }
 }

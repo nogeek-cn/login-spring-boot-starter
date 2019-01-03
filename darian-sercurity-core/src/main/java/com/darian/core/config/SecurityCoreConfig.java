@@ -1,6 +1,6 @@
-package com.darian.darianSercurityCore.config;
+package com.darian.core.config;
 
-import com.darian.darianSercurityCore.properties.SecurityProperties;
+import com.darian.core.properties.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

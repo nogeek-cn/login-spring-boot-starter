@@ -1,4 +1,4 @@
-package com.darian.darianSercurityCore;
+package com.darian.core;
 
 import org.springframework.context.annotation.Import;
 

@@ -1,6 +1,7 @@
-package com.darian.darianSercurityCore.properties;
+package com.darian.core.properties;
 
 import lombok.Data;
+import org.springframework.boot.autoconfigure.social.SocialProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Arrays;
@@ -11,20 +12,32 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "darian.security")
 public class SecurityProperties {
 
-    private BrowserProperties browser  = new BrowserProperties();
+    private BrowserProperties browser = new BrowserProperties();
 
     private ValidateCodeProperties code = new ValidateCodeProperties();
 
+    private socialProperties social = new socialProperties();
 
-    /***
-     * loginPage 登陆页
-     * remberMeSeconds “记住我” 的过期时间  单位： 秒
-     * 604800 s = 7 天
-     */
+    @Data
+    public static class socialProperties{
+        private QQProperties qq = new QQProperties();
+
+        @Data
+        public static class QQProperties extends SocialProperties {
+            private String providerId = "qq";
+        }
+    }
+
+
     @Data
     public static class BrowserProperties {
         // 默认的配置页。如果用户机子设置了，就按照用户自己设置的条转
         private String loginPage = "/darianlogin.html";
+        /***
+         * 第三方服务器获取的 Token 存到数据库中的过期时间
+         * remberMeSeconds “记住我” 的过期时间  单位： 秒
+         *      * 604800 s = 7 天
+         */
         private int remberMeSeconds = 604800;
     }
 
@@ -51,9 +64,6 @@ public class SecurityProperties {
              * 过期时间
              */
             private int explireIn = 60;
-
-
         }
     }
-
 }

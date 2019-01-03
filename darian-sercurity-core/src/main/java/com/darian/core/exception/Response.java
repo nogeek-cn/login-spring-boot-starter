@@ -1,4 +1,4 @@
-package com.darian.darianSercurityCore.exception;
+package com.darian.core.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

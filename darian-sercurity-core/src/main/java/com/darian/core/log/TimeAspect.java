@@ -1,4 +1,4 @@
-package com.darian.darianSercurityCore.log;
+package com.darian.core.log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
